@@ -22,7 +22,6 @@ util/WilsonInterval.class
 collector/Test.class
 module/HandEstimator2.class
 player/HittingPlayer.class
-ginrummy/ExternalGinRummyGame.class
 ginrummy/SimpleFileGinRummyPlayer.class
 ginrummy/GinRummyUtil.class
 hello/HelloWorld.class

@@ -5,12 +5,12 @@ import java.util.Random;
 
 
 /**
- * Implements a random dummy Gin Rummy player that has the following trivial, poor play policy: 
+ * Implements a random dummy Gin Rummy player that has the following trivial, poor play policy:
  * Ignore opponent actions and cards no longer in play.
  * Draw face up card only if it becomes part of a meld.  Draw face down card otherwise.
  * Discard a highest ranking unmelded card without regard to breaking up pairs, etc.
  * Knock as early as possible.
- * 
+ *
  * @author Todd W. Neller
  * @version 1.0
 
@@ -40,7 +40,7 @@ public class SimpleGinRummyPlayer implements GinRummyPlayer {
 	protected ArrayList<Card> cards = new ArrayList<Card>();
 	protected Random random = new Random();
 	protected boolean opponentKnocked = false;
-	Card faceUpCard, drawnCard; 
+	Card faceUpCard, drawnCard;
 	ArrayList<Long> drawDiscardBitstrings = new ArrayList<Long>();
 
 	@Override
@@ -92,7 +92,7 @@ public class SimpleGinRummyPlayer implements GinRummyPlayer {
 			drawDiscard.add(card);
 			if (drawDiscardBitstrings.contains(GinRummyUtil.cardsToBitstring(drawDiscard)))
 				continue;
-			
+
 			ArrayList<Card> remainingCards = (ArrayList<Card>) cards.clone();
 			remainingCards.remove(card);
 			ArrayList<ArrayList<ArrayList<Card>>> bestMeldSets = GinRummyUtil.cardsToBestMeldSets(remainingCards);
@@ -123,7 +123,7 @@ public class SimpleGinRummyPlayer implements GinRummyPlayer {
 
 	@Override
 	public ArrayList<ArrayList<Card>> getFinalMelds() {
-		// Check if deadwood of maximal meld is low enough to go out. 
+		// Check if deadwood of maximal meld is low enough to go out.
 		ArrayList<ArrayList<ArrayList<Card>>> bestMeldSets = GinRummyUtil.cardsToBestMeldSets(cards);
 		if (!opponentKnocked && (bestMeldSets.isEmpty() || GinRummyUtil.getDeadwoodPoints(bestMeldSets.get(0), cards) > GinRummyUtil.MAX_DEADWOOD))
 			return null;
@@ -145,12 +145,12 @@ public class SimpleGinRummyPlayer implements GinRummyPlayer {
 	@Override
 	public void reportLayoff(int playerNum, Card layoffCard, ArrayList<Card> opponentMeld) {
 		// Ignored by simple player, but could affect strategy of more complex player.
-		
+
 	}
 
 	@Override
 	public void reportFinalHand(int playerNum, ArrayList<Card> hand) {
-		// Ignored by simple player, but could affect strategy of more complex player.		
+		// Ignored by simple player, but could affect strategy of more complex player.
 	}
-	
+
 }

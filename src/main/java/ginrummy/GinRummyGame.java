@@ -3,7 +3,7 @@ package ginrummy;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
-import player.*;
+
 
 /**
  * A class for modeling a game of Gin Rummy
@@ -74,7 +74,7 @@ public class GinRummyGame {
 	 * @return the winning player number 0 or 1
 	 */
 	@SuppressWarnings("unchecked")
-	public int play() {
+	public int[] play() {
 		int[] scores = new int[2];
 		ArrayList<ArrayList<Card>> hands = new ArrayList<ArrayList<Card>>();
 		hands.add(new ArrayList<Card>());
@@ -130,7 +130,10 @@ public class GinRummyGame {
 					if (!hands.get(currentPlayer).contains(discardCard) || discardCard == faceUpCard) {
 						if (playVerbose)
 							System.out.printf("Player %d discards %s illegally and forfeits.\n", currentPlayer, discardCard);
-						return opponent;
+						return new int[] {
+							opponent == 0 ? 100 : -1,
+							opponent == 1 ? 100 : -1
+						};
 					}
 					hands.get(currentPlayer).remove(discardCard);
 					for (int i = 0; i < 2; i++)
@@ -174,7 +177,10 @@ public class GinRummyGame {
 							|| (meldBitstring & unmelded) != meldBitstring) { // ... or meld not in hand
 						if (playVerbose)
 							System.out.printf("Player %d melds %s illegally and forfeits.\n", currentPlayer, knockMelds);
-						return opponent;
+						return new int[] {
+							opponent == 0 ? 100 : -1,
+							opponent == 1 ? 100 : -1
+						};
 					}
 					unmelded &= ~meldBitstring; // remove successfully melded cards from
 				}
@@ -183,7 +189,10 @@ public class GinRummyGame {
 				if (knockingDeadwood > GinRummyUtil.MAX_DEADWOOD) {
 					if (playVerbose)
 						System.out.printf("Player %d melds %s with greater than %d deadwood and forfeits.\n", currentPlayer, knockMelds, knockingDeadwood);
-					return opponent;
+					return new int[] {
+						opponent == 0 ? 100 : -1,
+						opponent == 1 ? 100 : -1
+					};
 				}
 
 				ArrayList<ArrayList<Card>> meldsCopy = new ArrayList<ArrayList<Card>>();
@@ -214,7 +223,10 @@ public class GinRummyGame {
 							|| (meldBitstring & opponentUnmelded) != meldBitstring) { // ... or meld not in hand
 						if (playVerbose)
 							System.out.printf("Player %d melds %s illegally and forfeits.\n", opponent, opponentMelds);
-						return currentPlayer;
+						return new int[] {
+							currentPlayer == 0 ? 100 : -1,
+							currentPlayer == 1 ? 100 : -1
+						};
 					}
 					opponentUnmelded &= ~meldBitstring; // remove successfully melded cards from
 				}
@@ -296,7 +308,7 @@ public class GinRummyGame {
 		}
 		if (playVerbose)
 			System.out.printf("Player %s wins.\n", scores[0] > scores[1] ? 0 : 1);
-		return scores[0] >= GinRummyUtil.GOAL_SCORE ? 0 : 1;
+		return scores;
 	}
 
 
@@ -307,20 +319,21 @@ public class GinRummyGame {
 	public static void main(String[] args) {
 		// Single verbose demonstration game
 		setPlayVerbose(true);
-		new GinRummyGame(new AdvancedPlayer(), new SimpleFileGinRummyPlayer()).play();
+		new GinRummyGame(new SimpleGinRummyPlayer(), new SimpleGinRummyPlayer()).play();
 
 		// Multiple non-verbose games
-//		setPlayVerbose(false);
-//		int numGames = 1000;
-//		int numP1Wins = 0;
-//		GinRummyGame game = new GinRummyGame(new SimpleGinRummyPlayer(), new SimpleFileGinRummyPlayer());
-//		long startMs = System.currentTimeMillis();
-//		for (int i = 0; i < numGames; i++) {
-//			numP1Wins += game.play();
-//		}
-//		long totalMs = System.currentTimeMillis() - startMs;
-//		System.out.printf("%d games played in %d ms.\n", numGames, totalMs);
-//		System.out.printf("Games Won: P0:%d, P1:%d.\n", numGames - numP1Wins, numP1Wins);
+		setPlayVerbose(false);
+		int numGames = 1000;
+		int numP1Wins = 0;
+		GinRummyGame game = new GinRummyGame(new SimpleGinRummyPlayer(), new SimpleGinRummyPlayer());
+		long startMs = System.currentTimeMillis();
+		for (int i = 0; i < numGames; i++) {
+			int[] scores = game.play();
+			numP1Wins += scores[0] > scores[1] ? 0 : 1;
+		}
+		long totalMs = System.currentTimeMillis() - startMs;
+		System.out.printf("%d games played in %d ms.\n", numGames, totalMs);
+		System.out.printf("Games Won: P0:%d, P1:%d.\n", numGames - numP1Wins, numP1Wins);
 	}
 
 }

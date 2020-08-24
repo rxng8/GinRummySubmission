@@ -107,7 +107,7 @@ util/WilsonInterval.class
 **Advanced Player** is constructed from Hitting Player, Estimating Player, and Knocking Player with their functionalities and modules. This player will draw and discard based on estimated card value, play safe discard strategy, and also knock at the right time.
 
 
-# Run JAR Files
+# Build from source:
 1. Clean, Install, Compile, and Package my Maven project
 
 ```
@@ -138,7 +138,7 @@ java -cp ./target/botpackage-0.1.0.jar HelloWorld
 ```
 # Make sure each of the java file contains has an associated .class file besides.
 
-javac -cp "./src/main/java;./vermouth.jar;./target/botpackage-0.1.0.jar;./assets/slf4j-simple-2.0.0-alpha1.jar" ./src/main/java/*.java
+javac -cp "./src/main/java:./vermouth.jar:./target/botpackage-0.1.0.jar:./assets/slf4j-simple-2.0.0-alpha1.jar" ./src/main/java/*.java
 ```
 Or you can use the compiled code by maven in the path `./target/classes` that was compiled before by the command `mvn compile`.
 
@@ -146,11 +146,23 @@ Or you can use the compiled code by maven in the path `./target/classes` that wa
 4. Run the vermouth code
 - with player in the jar file
 ```
-java -jar ./vermouth/vermouth.jar --oneall --games 100 --agents 'jar:file:./target/botpackage-0.1.0.jar!/AdvancedPlayer' 'jar:file:./target/botpackage-0.1.0.jar!/AdvancedPlayer' 
+java -cp ./target/botpackage-0.1.0.jar:./assets/slf4j-simple-2.0.0-alpha1.jar:./vermouth/vermouth.jar eaai.ginrummy.Main --oneall --games 100 --agents 'jar:file:./target/botpackage-0.1.0.jar!/AdvancedPlayer' 'jar:file:./target/botpackage-0.1.0.jar!/AdvancedPlayer'
 ```
 - With the source file in the directory.
 ```
 java -jar ./vermouth/vermouth.jar --oneall --games 100 --agents 'file:./target/classes/AdvancedPlayer' 'file:./target/classes/AdvancedPlayer' 
 ```
 
-As you can see, both code run throws the error cannot cast to GinRummyPlayer, which I believe we are casting the Player to the GinRummyPlayer interface in the vermouth jar, which is not possible because we make it implement the GinrummyPlayer interface in the original project.
+<!-- As you can see, both code run throws the error cannot cast to GinRummyPlayer, which I believe we are casting the Player to the GinRummyPlayer interface in the vermouth jar, which is not possible because we make it implement the GinrummyPlayer interface in the original project. -->
+
+# Run jar files: (The jar file is in the path `./target/botpackage-0.1.0.jar`)
+
+1. Run the botpackage jar on its own:
+```
+java -cp ./assets/slf4j-simple-2.0.0-alpha1.jar:./target/botpackage-0.1.0.jar ginrummy.GinRummyGame
+```
+
+2. Run with the vermouth jar project:
+```
+java -cp ./target/botpackage-0.1.0.jar:./assets/slf4j-simple-2.0.0-alpha1.jar:./vermouth/vermouth.jar eaai.ginrummy.Main --oneall --games 100 --agents 'jar:file:./target/botpackage-0.1.0.jar!/AdvancedPlayer' 'jar:file:./target/botpackage-0.1.0.jar!/AdvancedPlayer'
+```
